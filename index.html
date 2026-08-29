@@ -190,7 +190,18 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="mainWrap">
+
+  <!-- ORDER VIEW (shown only when opened via a design link) -->
+  <div class="card" id="orderViewCard" style="display:none; margin-bottom:22px;">
+    <div class="section-title" id="orderViewTitle">Order design</div>
+    <div class="hand-row" id="orderViewHandRow"></div>
+    <div class="summary-line" id="orderViewSummary"></div>
+    <div class="btn-row">
+      <a class="btn btn-secondary btn-full" href="javascript:void(0)" onclick="exitOrderView()" style="text-align:center;">Back to the design studio</a>
+    </div>
+  </div>
+
 
   <header class="top">
     <div>
@@ -656,6 +667,8 @@ async function submitOrder(){
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending…';
 
+  const viewUrl = buildOrderViewUrl(name);
+
   const payload = {
     "Customer's first name": name,
     "Parent/guardian email": email,
@@ -667,6 +680,7 @@ async function submitOrder(){
     "Finish": nameOf(FINISHES,state.finish),
     "Accent style": nameOf(ACCENTS,state.accent),
     "Accent color (if used)": state.accent === 'color' ? colorName(state.accentColor) : '(n/a)',
+    "View this design": viewUrl,
     "_replyto": email,
     "_subject": `New nail order from ${name}`
   };
@@ -711,8 +725,72 @@ function closeOwnerModal(){
   document.getElementById('ownerOverlay').classList.remove('show');
 }
 
+/* ---------------- SHAREABLE ORDER VIEW ---------------- */
+function buildOrderViewUrl(name){
+  const p = new URLSearchParams();
+  p.set('view', '1');
+  p.set('name', name);
+  p.set('color', state.color);
+  p.set('pattern', state.pattern);
+  p.set('finish', state.finish);
+  p.set('accent', state.accent);
+  p.set('accentColor', state.accentColor);
+  p.set('seed', state.seed);
+  return `${location.origin}${location.pathname}?${p.toString()}`;
+}
+
+function renderOrderViewFromParams(params){
+  document.querySelector('.stage').style.display = 'none';
+  document.getElementById('orderCard').style.display = 'none';
+
+  const viewState = {
+    color: params.get('color') || 'pink',
+    pattern: params.get('pattern') || 'solid',
+    finish: params.get('finish') || 'glossy',
+    accent: params.get('accent') || 'none',
+    accentColor: params.get('accentColor') || 'pink',
+    seed: parseInt(params.get('seed'), 10) || 0
+  };
+  const custName = params.get('name') || 'Customer';
+
+  document.getElementById('orderViewTitle').textContent = `${custName}'s design ✨`;
+
+  const row = document.getElementById('orderViewHandRow');
+  row.innerHTML = '';
+  const labels = ['Thumb','Index','Middle','Ring','Pinky'];
+  for(let i=0;i<5;i++){
+    const isAccent = viewState.accent !== 'none' && i === 3;
+    const spec = {
+      color: viewState.color, pattern: viewState.pattern, finish: viewState.finish,
+      seed: viewState.seed, isAccent, accentStyle: viewState.accent, accentColor: viewState.accentColor
+    };
+    const svg = buildNailSVG(spec, {size:100, nailIndex:i, isAccent});
+    const slot = document.createElement('div');
+    slot.className = 'nail-slot';
+    slot.innerHTML = svg + `<div class="nail-label">${labels[i]}${isAccent?' ★':''}</div>`;
+    row.appendChild(slot);
+  }
+
+  let txt = `${colorName(viewState.color)} • ${nameOf(PATTERNS,viewState.pattern)} • ${nameOf(FINISHES,viewState.finish)} finish`;
+  if(viewState.accent !== 'none'){
+    txt += ` • Ring finger: ${nameOf(ACCENTS,viewState.accent).toLowerCase()}`;
+    if(viewState.accent === 'color') txt += ` (${colorName(viewState.accentColor)})`;
+  }
+  document.getElementById('orderViewSummary').textContent = txt;
+  document.getElementById('orderViewCard').style.display = 'block';
+}
+
+function exitOrderView(){
+  window.location.href = location.origin + location.pathname;
+}
+
 /* ---------------- INIT ---------------- */
-refreshAll();
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('view') === '1'){
+  renderOrderViewFromParams(urlParams);
+} else {
+  refreshAll();
+}
 </script>
 </body>
 </html>
