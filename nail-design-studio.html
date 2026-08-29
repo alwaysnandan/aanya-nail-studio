@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiny Tips Nail Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#FF6FA5;
+    --lilac:#B98EF0;
+    --sky:#6EC6FF;
+    --mint:#59E0B8;
+    --sun:#FFD23F;
+    --cream:#FFF7F0;
+    --card:#FFFFFF;
+    --ink:#3A2A4D;
+    --ink-soft:#7B6B92;
+    --line:#F0E3F4;
+    --radius:22px;
+    --shadow: 0 10px 30px rgba(90, 40, 110, 0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 8% 12%, rgba(255,111,165,0.10), transparent 40%),
+      radial-gradient(circle at 92% 8%, rgba(110,198,255,0.12), transparent 42%),
+      radial-gradient(circle at 85% 90%, rgba(89,224,184,0.10), transparent 40%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Nunito', sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3, .brand{ font-family:'Baloo 2', sans-serif; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:20px 20px 80px; }
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 4px 26px;
+    flex-wrap:wrap; gap:10px;
+  }
+  .brand{
+    font-weight:800; font-size:28px; color:var(--ink);
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand .dot{
+    width:14px;height:14px;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--pink), var(--lilac), var(--sky), var(--mint), var(--sun), var(--pink));
+    display:inline-block;
+  }
+  .tagline{ color:var(--ink-soft); font-weight:600; font-size:14.5px; margin-top:2px;}
+  .owner-link{
+    font-size:12.5px; color:var(--ink-soft); text-decoration:none; font-weight:700;
+    border:1px solid var(--line); padding:7px 12px; border-radius:100px; background:#fff;
+    cursor:pointer; white-space:nowrap;
+  }
+  .owner-link:hover{ background:var(--line); }
+
+  .stage{
+    display:grid; grid-template-columns: 1fr 1fr; gap:22px; align-items:start;
+  }
+  @media (max-width:880px){ .stage{ grid-template-columns: 1fr; } }
+
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:22px; border:1px solid var(--line);
+  }
+
+  .section-title{
+    font-weight:800; font-size:15px; letter-spacing:.02em; color:var(--ink);
+    margin:0 0 10px; display:flex; align-items:center; gap:8px;
+  }
+  .section-sub{ color:var(--ink-soft); font-size:13px; font-weight:600; margin:-4px 0 14px; }
+
+  .picker-block{ margin-bottom:22px; }
+  .picker-block:last-child{ margin-bottom:0; }
+
+  .swatches{ display:flex; flex-wrap:wrap; gap:10px; }
+  .swatch{
+    width:38px; height:38px; border-radius:50%; border:3px solid #fff;
+    box-shadow:0 0 0 2px var(--line); cursor:pointer; position:relative;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .swatch:hover{ transform:translateY(-2px); }
+  .swatch.active{ box-shadow:0 0 0 3px var(--ink); transform:translateY(-2px); }
+  .swatch.white-swatch{ box-shadow:0 0 0 2px var(--line), inset 0 0 0 1px #ddd; }
+
+  .opt-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(74px,1fr)); gap:10px; }
+  .opt-tile{
+    border:2px solid var(--line); border-radius:14px; background:#fffdfb;
+    padding:8px 6px 7px; text-align:center; cursor:pointer;
+    transition:border-color .12s ease, transform .12s ease;
+  }
+  .opt-tile:hover{ transform:translateY(-2px); }
+  .opt-tile.active{ border-color:var(--ink); background:#FFF0F6; }
+  .opt-tile svg{ width:36px; height:52px; display:block; margin:0 auto 4px; }
+  .opt-tile span{ font-size:10.5px; font-weight:700; color:var(--ink-soft); line-height:1.15; display:block; }
+  .opt-tile.active span{ color:var(--ink); }
+
+  .accent-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .pill{
+    border:2px solid var(--line); background:#fffdfb; border-radius:100px;
+    padding:8px 14px; font-weight:700; font-size:12.5px; cursor:pointer; color:var(--ink-soft);
+  }
+  .pill.active{ border-color:var(--ink); background:#FFF0F6; color:var(--ink); }
+
+  /* Preview card */
+  .preview-card{ position:sticky; top:16px; }
+  .hand-row{
+    display:flex; justify-content:center; gap:6px; padding:10px 4px 6px; flex-wrap:wrap;
+  }
+  .nail-slot{ width:18%; min-width:56px; text-align:center; }
+  .nail-slot svg{ width:100%; height:auto; filter:drop-shadow(0 6px 10px rgba(80,40,90,.14)); }
+  .nail-label{ font-size:10px; color:var(--ink-soft); font-weight:700; margin-top:4px; }
+
+  .btn-row{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn{
+    border:none; border-radius:100px; padding:12px 18px; font-weight:800; font-size:13.5px;
+    cursor:pointer; font-family:'Nunito', sans-serif;
+  }
+  .btn-primary{ background:var(--ink); color:#fff; }
+  .btn-primary:hover{ background:#2c2038; }
+  .btn-secondary{ background:#fff; color:var(--ink); border:2px solid var(--line); }
+  .btn-secondary:hover{ background:var(--line); }
+  .btn-full{ width:100%; }
+  .btn-lg{ padding:14px 20px; font-size:14.5px; }
+
+  .summary-line{
+    font-size:12.5px; color:var(--ink-soft); font-weight:700; text-align:center; margin-top:12px;
+    padding:10px 12px; background:#FFF7F0; border-radius:12px;
+  }
+
+  /* Order form */
+  .order-card{ margin-top:22px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-weight:800; font-size:12.5px; margin-bottom:6px; color:var(--ink); }
+  .field input, .field textarea{
+    width:100%; border:2px solid var(--line); border-radius:12px; padding:11px 13px;
+    font-family:'Nunito', sans-serif; font-size:14px; color:var(--ink); background:#fffdfb;
+  }
+  .field input:focus, .field textarea:focus{ outline:none; border-color:var(--pink); }
+  .field-hint{ font-size:11.5px; color:var(--ink-soft); margin-top:4px; font-weight:600; }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .two-col{ grid-template-columns:1fr; } }
+
+  .confirm-box{
+    text-align:center; padding:30px 16px;
+  }
+  .confirm-box .big-emoji{ font-size:44px; display:block; margin-bottom:8px; }
+
+  .error-text{ color:#D6336C; font-size:12.5px; font-weight:700; margin-top:6px; display:none; }
+
+  /* Owner modal */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(58,42,77,0.45); display:none;
+    align-items:center; justify-content:center; z-index:50; padding:16px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal{
+    background:#fff; border-radius:20px; max-width:560px; width:100%;
+    max-height:86vh; overflow-y:auto; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.25);
+  }
+  .modal h2{ margin:0 0 4px; font-size:20px; }
+  .modal .close-x{
+    float:right; border:none; background:var(--line); width:30px; height:30px; border-radius:50%;
+    cursor:pointer; font-weight:800; color:var(--ink); font-size:15px;
+  }
+  .order-item{
+    border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:12px;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .order-item.done{ opacity:.55; }
+  .order-item .mini-hand{ display:flex; gap:2px; flex-shrink:0; width:100px; }
+  .order-item .mini-hand svg{ width:20%; height:auto; }
+  .order-item .info{ flex:1; font-size:12.5px; }
+  .order-item .info b{ font-size:14px; }
+  .order-item .info .meta{ color:var(--ink-soft); font-weight:700; margin:2px 0 6px; }
+  .order-item .info .spec{ color:var(--ink); line-height:1.5; }
+  .order-actions{ display:flex; gap:6px; margin-top:8px; }
+  .order-actions button{
+    border:none; border-radius:100px; padding:5px 11px; font-size:11px; font-weight:800; cursor:pointer;
+  }
+  .mark-btn{ background:var(--mint); color:#0a4534; }
+  .del-btn{ background:#FFE1E8; color:#9a2049; }
+  .empty-state{ text-align:center; color:var(--ink-soft); font-weight:700; padding:30px 10px; }
+  .passcode-box input{ width:100%; padding:12px; border-radius:12px; border:2px solid var(--line); font-size:16px; margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <div class="brand"><span class="dot"></span>Tiny Tips Nail Studio</div>
+      <div class="tagline">Design your own nail set, then send it in to get made! 💅</div>
+    </div>
+    <button class="owner-link" onclick="openOwnerInfo()">Studio Owner</button>
+  </header>
+
+  <div class="stage">
+    <!-- PICKERS -->
+    <div class="card">
+      <div class="section-title">1. Pick a base color</div>
+      <div class="picker-block">
+        <div class="swatches" id="colorSwatches"></div>
+      </div>
+
+      <div class="section-title">2. Pick a pattern</div>
+      <div class="section-sub">Tap one to see it on your nails</div>
+      <div class="picker-block">
+        <div class="opt-grid" id="patternGrid"></div>
+      </div>
+
+      <div class="section-title">3. Pick a finish</div>
+      <div class="picker-block">
+        <div class="opt-grid" id="finishGrid"></div>
+      </div>
+
+      <div class="section-title">4. Accent nail</div>
+      <div class="section-sub">One nail gets a little something extra</div>
+      <div class="picker-block">
+        <div class="accent-row" id="accentRow"></div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="card preview-card">
+      <div class="section-title">Your design ✨</div>
+      <div class="hand-row" id="handRow"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" style="flex:1" onclick="shuffleLook()">🎲 Shuffle look</button>
+        <button class="btn btn-secondary" style="flex:1" onclick="surpriseMe()">🌈 Surprise me</button>
+      </div>
+      <div class="summary-line" id="summaryLine"></div>
+    </div>
+  </div>
+
+  <!-- ORDER FORM -->
+  <div class="card order-card" id="orderCard">
+    <div class="section-title">Love it? Send your order! 📦</div>
+    <div class="section-sub">A grown-up's email and phone number, please — that's how the studio will reach you about your order.</div>
+
+    <div id="orderForm">
+      <div class="field">
+        <label for="custName">Your first name</label>
+        <input type="text" id="custName" placeholder="e.g. Maya" maxlength="40">
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="custEmail">Parent/guardian email</label>
+          <input type="email" id="custEmail" placeholder="parent@email.com">
+        </div>
+        <div class="field">
+          <label for="custPhone">Parent/guardian phone</label>
+          <input type="tel" id="custPhone" placeholder="(555) 555-5555">
+        </div>
+      </div>
+      <div class="field">
+        <label for="custNote">Anything else? (optional)</label>
+        <textarea id="custNote" rows="2" placeholder="Nail length, occasion, allergies, etc."></textarea>
+      </div>
+      <div class="error-text" id="formError">Please fill in your name and a parent's email and phone number.</div>
+      <button class="btn btn-primary btn-full btn-lg" onclick="submitOrder()">Submit my order 💌</button>
+    </div>
+
+    <div id="confirmBox" class="confirm-box" style="display:none;">
+      <span class="big-emoji">🎉</span>
+      <h3 style="margin:0 0 6px;">Order sent!</h3>
+      <p style="color:var(--ink-soft); font-weight:600; margin:0 0 18px;">The studio has your design. You'll hear back soon!</p>
+      <button class="btn btn-secondary" onclick="resetAfterOrder()">Design another set</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- OWNER INFO MODAL -->
+<div class="modal-overlay" id="ownerOverlay">
+  <div class="modal">
+    <button class="close-x" onclick="closeOwnerModal()">✕</button>
+    <h2>Where orders go</h2>
+    <p style="color:var(--ink-soft); font-weight:600; font-size:13.5px; line-height:1.6;">
+      Every submitted order is emailed to you automatically and also saved to your
+      <a href="https://formspree.io/forms" target="_blank" rel="noopener">Formspree dashboard</a>,
+      where you can see the customer's name, contact info, and their exact color/pattern/finish/accent choices for each order.
+    </p>
+    <p style="color:var(--ink-soft); font-weight:600; font-size:13.5px; line-height:1.6;">
+      No passcode needed here — just check your inbox or log in to Formspree to see new orders as they come in.
+    </p>
+  </div>
+</div>
+
+<script>
+/* ---------------- CONFIG ---------------- */
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xoeqvlaa";
+
+/* ---------------- DATA ---------------- */
+const COLORS = [
+  {id:'pink', name:'Bubblegum Pink', hex:'#FF6FA5'},
+  {id:'lilac', name:'Lilac Dream', hex:'#B98EF0'},
+  {id:'sky', name:'Sky Blue', hex:'#6EC6FF'},
+  {id:'mint', name:'Minty Fresh', hex:'#59E0B8'},
+  {id:'sun', name:'Sunshine Yellow', hex:'#FFD23F'},
+  {id:'peach', name:'Peach Fizz', hex:'#FFB07C'},
+  {id:'coral', name:'Coral Pop', hex:'#FF6B6B'},
+  {id:'lav', name:'Lavender', hex:'#C9A8FF'},
+  {id:'white', name:'Cloud White', hex:'#FFFFFF'},
+  {id:'plum', name:'Midnight Plum', hex:'#4A3466'},
+];
+const PATTERNS = [
+  {id:'solid', name:'Solid'},
+  {id:'stripes', name:'Stripes'},
+  {id:'dots', name:'Dots'},
+  {id:'hearts', name:'Hearts'},
+  {id:'stars', name:'Stars'},
+  {id:'ombre', name:'Ombré'},
+  {id:'french', name:'French Tip'},
+];
+const FINISHES = [
+  {id:'glossy', name:'Glossy'},
+  {id:'matte', name:'Matte'},
+  {id:'shimmer', name:'Shimmer'},
+  {id:'glitter', name:'Glitter'},
+  {id:'chrome', name:'Chrome'},
+];
+const ACCENTS = [
+  {id:'none', name:'None — match all 5'},
+  {id:'glitter', name:'Extra glitter nail'},
+  {id:'gems', name:'Gem nail'},
+  {id:'color', name:'Color-pop nail'},
+];
+
+let state = {
+  color: 'pink',
+  pattern: 'solid',
+  finish: 'glossy',
+  accent: 'gems',
+  accentColor: 'lilac',
+  seed: Math.floor(Math.random()*1e9)
+};
+
+/* ---------------- SEEDED RANDOM ---------------- */
+function mulberry32(a){
+  return function(){
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ---------------- NAIL SVG RENDERING ---------------- */
+const NAIL_PATH = "M50 8 C22 8 8 40 8 75 C8 118 26 142 50 142 C74 142 92 118 92 75 C92 40 78 8 50 8 Z";
+let uidCounter = 0;
+
+function heartPath(cx, cy, s){
+  return `M${cx} ${cy+s*0.3} C${cx-s} ${cy-s*0.6} ${cx-s*1.6} ${cy+s*0.5} ${cx} ${cy+s*1.6} C${cx+s*1.6} ${cy+s*0.5} ${cx+s} ${cy-s*0.6} ${cx} ${cy+s*0.3} Z`;
+}
+function starPath(cx, cy, r){
+  let pts = [];
+  for(let i=0;i<10;i++){
+    const rad = i%2===0 ? r : r*0.42;
+    const ang = (Math.PI/5)*i - Math.PI/2;
+    pts.push(`${cx+rad*Math.cos(ang)},${cy+rad*Math.sin(ang)}`);
+  }
+  return `M${pts.join(' L')} Z`;
+}
+function lighten(hex, amt){
+  const c = hex.replace('#','');
+  const num = parseInt(c,16);
+  let r = (num>>16)+amt, g=((num>>8)&0xff)+amt, b=(num&0xff)+amt;
+  r=Math.min(255,Math.max(0,r)); g=Math.min(255,Math.max(0,g)); b=Math.min(255,Math.max(0,b));
+  return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+function darken(hex, amt){ return lighten(hex, -amt); }
+function colorHex(id){ const c = COLORS.find(c=>c.id===id); return c ? c.hex : '#FF6FA5'; }
+function colorName(id){ const c = COLORS.find(c=>c.id===id); return c ? c.name : id; }
+function nameOf(list,id){ const x = list.find(x=>x.id===id); return x? x.name : id; }
+
+function buildNailSVG(spec, opts){
+  opts = opts || {};
+  const size = opts.size || 100;
+  uidCounter++;
+  const uid = 'n'+uidCounter+'_'+Math.floor(Math.random()*99999);
+  const rng = mulberry32(spec.seed + (opts.nailIndex||0)*7919 + (opts.isAccent?4242:0));
+  const baseHex = spec.isAccent && spec.accentStyle === 'color' ? colorHex(spec.accentColor) : colorHex(spec.color);
+
+  let defs = `<clipPath id="clip_${uid}"><path d="${NAIL_PATH}"/></clipPath>`;
+  let fillAttr = `fill="${baseHex}"`;
+
+  if(spec.pattern === 'ombre'){
+    defs += `<linearGradient id="grad_${uid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${lighten(baseHex,40)}"/>
+      <stop offset="100%" stop-color="${darken(baseHex,30)}"/>
+    </linearGradient>`;
+    fillAttr = `fill="url(#grad_${uid})"`;
+  }
+
+  let inner = `<path d="${NAIL_PATH}" ${fillAttr}/>`;
+
+  // pattern layer, clipped
+  let patternSvg = '';
+  if(spec.pattern === 'stripes'){
+    const stripeColor = lighten(baseHex, spec.color==='white'?-40:70);
+    const angle = 25 + Math.floor(rng()*20);
+    let stripes = '';
+    for(let i=-4;i<10;i++){
+      const x = i*16;
+      stripes += `<rect x="${x}" y="-20" width="7" height="200" fill="${stripeColor}" opacity="0.85" transform="rotate(${angle} 50 75)"/>`;
+    }
+    patternSvg = `<g clip-path="url(#clip_${uid})">${stripes}</g>`;
+  } else if(spec.pattern === 'dots'){
+    const dotColor = lighten(baseHex, spec.color==='white'?-50:80);
+    let dots = '';
+    const rows = 6, cols=4;
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++){
+        const jitterX = (rng()-0.5)*6;
+        const jitterY = (rng()-0.5)*6;
+        const x = 14 + c*24 + (r%2===0?12:0) + jitterX;
+        const y = 10 + r*22 + jitterY;
+        dots += `<circle cx="${x}" cy="${y}" r="5.5" fill="${dotColor}" opacity="0.9"/>`;
+      }
+    }
+    patternSvg = `<g clip-path="url(#clip_${uid})">${dots}</g>`;
+  } else if(spec.pattern === 'hearts'){
+    const hColor = lighten(baseHex, spec.color==='white'?-50:90);
+    let hearts = '';
+    for(let i=0;i<6;i++){
+      const x = 20 + rng()*60;
+      const y = 15 + rng()*115;
+      hearts += `<path d="${heartPath(x,y,7)}" fill="${hColor}" opacity="0.92"/>`;
+    }
+    patternSvg = `<g clip-path="url(#clip_${uid})">${hearts}</g>`;
+  } else if(spec.pattern === 'stars'){
+    const sColor = lighten(baseHex, spec.color==='white'?-50:90);
+    let stars = '';
+    for(let i=0;i<6;i++){
+      const x = 20 + rng()*60;
+      const y = 15 + rng()*115;
+      stars += `<path d="${starPath(x,y,7)}" fill="${sColor}" opacity="0.92"/>`;
+    }
+    patternSvg = `<g clip-path="url(#clip_${uid})">${stars}</g>`;
+  } else if(spec.pattern === 'french'){
+    const tipColor = spec.color==='white' ? '#F2C9DA' : '#FFFFFF';
+    patternSvg = `<g clip-path="url(#clip_${uid})">
+      <path d="M8 60 C8 100 24 138 50 142 C76 138 92 100 92 60 C92 90 76 118 50 122 C24 118 8 90 8 60 Z" fill="${tipColor}" opacity="0.95"/>
+    </g>`;
+  }
+  inner += patternSvg;
+
+  // finish overlays
+  let finishSvg = '';
+  if(spec.finish === 'glossy'){
+    finishSvg = `<g clip-path="url(#clip_${uid})"><ellipse cx="35" cy="35" rx="14" ry="22" fill="#ffffff" opacity="0.35"/></g>`;
+  } else if(spec.finish === 'matte'){
+    finishSvg = `<g clip-path="url(#clip_${uid})"><path d="${NAIL_PATH}" fill="#000000" opacity="0.06"/></g>`;
+  } else if(spec.finish === 'shimmer'){
+    let sp = '';
+    for(let i=0;i<16;i++){
+      const x = 12+rng()*76, y=12+rng()*126;
+      sp += `<circle cx="${x}" cy="${y}" r="1.4" fill="#ffffff" opacity="${0.4+rng()*0.4}"/>`;
+    }
+    finishSvg = `<g clip-path="url(#clip_${uid})">${sp}</g>`;
+  } else if(spec.finish === 'glitter'){
+    let sp = '';
+    const glitterColors = ['#ffffff','#FFE7A0','#FFC1E3','#C9F2FF'];
+    for(let i=0;i<34;i++){
+      const x = 10+rng()*80, y=10+rng()*130;
+      const c = glitterColors[Math.floor(rng()*glitterColors.length)];
+      sp += `<circle cx="${x}" cy="${y}" r="${1+rng()*1.6}" fill="${c}" opacity="${0.5+rng()*0.5}"/>`;
+    }
+    finishSvg = `<g clip-path="url(#clip_${uid})">${sp}</g>`;
+  } else if(spec.finish === 'chrome'){
+    defs += `<linearGradient id="chrome_${uid}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.6"/>
+      <stop offset="55%" stop-color="#ffffff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>`;
+    finishSvg = `<g clip-path="url(#clip_${uid})"><path d="${NAIL_PATH}" fill="url(#chrome_${uid})"/></g>`;
+  }
+  inner += finishSvg;
+
+  // accent extras
+  if(spec.isAccent && spec.accentStyle === 'gems'){
+    let gems = '';
+    const gemColors = ['#FF6FA5','#B98EF0','#FFD23F'];
+    for(let i=0;i<3;i++){
+      const x = 35 + i*12;
+      const y = 28;
+      gems += `<circle cx="${x}" cy="${y}" r="4.5" fill="${gemColors[i%gemColors.length]}" stroke="#fff" stroke-width="1"/>`;
+    }
+    inner += `<g clip-path="url(#clip_${uid})">${gems}</g>`;
+  } else if(spec.isAccent && spec.accentStyle === 'glitter'){
+    let sp = '';
+    const glitterColors = ['#ffffff','#FFE7A0','#FFC1E3','#C9F2FF'];
+    for(let i=0;i<50;i++){
+      const x = 10+rng()*80, y=10+rng()*130;
+      const c = glitterColors[Math.floor(rng()*glitterColors.length)];
+      sp += `<circle cx="${x}" cy="${y}" r="${1+rng()*1.8}" fill="${c}" opacity="${0.6+rng()*0.4}"/>`;
+    }
+    inner += `<g clip-path="url(#clip_${uid})">${sp}</g>`;
+  }
+
+  // outline
+  inner += `<path d="${NAIL_PATH}" fill="none" stroke="rgba(80,50,90,0.18)" stroke-width="2"/>`;
+
+  return `<svg viewBox="0 0 100 150" width="${size}" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${inner}</svg>`;
+}
+
+/* ---------------- RENDER FUNCTIONS ---------------- */
+function accentPositionIndex(){ return 3; } // ring finger (0-indexed: thumb,index,middle,ring,pinky)
+
+function renderHand(){
+  const row = document.getElementById('handRow');
+  row.innerHTML = '';
+  const labels = ['Thumb','Index','Middle','Ring','Pinky'];
+  for(let i=0;i<5;i++){
+    const isAccent = state.accent !== 'none' && i === accentPositionIndex();
+    const spec = {
+      color: state.color, pattern: state.pattern, finish: state.finish,
+      seed: state.seed, isAccent, accentStyle: state.accent, accentColor: state.accentColor
+    };
+    const svg = buildNailSVG(spec, {size:100, nailIndex:i, isAccent});
+    const slot = document.createElement('div');
+    slot.className = 'nail-slot';
+    slot.innerHTML = svg + `<div class="nail-label">${labels[i]}${isAccent?' ★':''}</div>`;
+    row.appendChild(slot);
+  }
+  updateSummary();
+}
+
+function updateSummary(){
+  let txt = `${colorName(state.color)} • ${nameOf(PATTERNS,state.pattern)} • ${nameOf(FINISHES,state.finish)} finish`;
+  if(state.accent !== 'none'){
+    txt += ` • Ring finger: ${nameOf(ACCENTS,state.accent).toLowerCase()}`;
+    if(state.accent === 'color') txt += ` (${colorName(state.accentColor)})`;
+  }
+  document.getElementById('summaryLine').textContent = txt;
+}
+
+function renderColorSwatches(){
+  const el = document.getElementById('colorSwatches');
+  el.innerHTML = '';
+  COLORS.forEach(c=>{
+    const d = document.createElement('div');
+    d.className = 'swatch' + (state.color===c.id?' active':'') + (c.id==='white'?' white-swatch':'');
+    d.style.background = c.hex;
+    d.title = c.name;
+    d.onclick = ()=>{ state.color = c.id; refreshAll(); };
+    el.appendChild(d);
+  });
+}
+
+function renderPatternGrid(){
+  const el = document.getElementById('patternGrid');
+  el.innerHTML = '';
+  PATTERNS.forEach(p=>{
+    const spec = {color: state.color, pattern: p.id, finish: state.finish, seed: state.seed, isAccent:false};
+    const svg = buildNailSVG(spec, {size:40});
+    const d = document.createElement('div');
+    d.className = 'opt-tile' + (state.pattern===p.id?' active':'');
+    d.innerHTML = svg + `<span>${p.name}</span>`;
+    d.onclick = ()=>{ state.pattern = p.id; refreshAll(); };
+    el.appendChild(d);
+  });
+}
+
+function renderFinishGrid(){
+  const el = document.getElementById('finishGrid');
+  el.innerHTML = '';
+  FINISHES.forEach(f=>{
+    const spec = {color: state.color, pattern:'solid', finish: f.id, seed: state.seed, isAccent:false};
+    const svg = buildNailSVG(spec, {size:40});
+    const d = document.createElement('div');
+    d.className = 'opt-tile' + (state.finish===f.id?' active':'');
+    d.innerHTML = svg + `<span>${f.name}</span>`;
+    d.onclick = ()=>{ state.finish = f.id; refreshAll(); };
+    el.appendChild(d);
+  });
+}
+
+function renderAccentRow(){
+  const el = document.getElementById('accentRow');
+  el.innerHTML = '';
+  ACCENTS.forEach(a=>{
+    const d = document.createElement('div');
+    d.className = 'pill' + (state.accent===a.id?' active':'');
+    d.textContent = a.name;
+    d.onclick = ()=>{ state.accent = a.id; refreshAll(); };
+    el.appendChild(d);
+  });
+  if(state.accent === 'color'){
+    const swWrap = document.createElement('div');
+    swWrap.style.cssText = 'display:flex;gap:6px;align-items:center;width:100%;margin-top:6px;';
+    COLORS.forEach(c=>{
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.style.width='26px'; sw.style.height='26px';
+      sw.style.background = c.hex;
+      if(state.accentColor===c.id) sw.classList.add('active');
+      sw.onclick = ()=>{ state.accentColor = c.id; refreshAll(); };
+      swWrap.appendChild(sw);
+    });
+    el.appendChild(swWrap);
+  }
+}
+
+function refreshAll(){
+  renderColorSwatches();
+  renderPatternGrid();
+  renderFinishGrid();
+  renderAccentRow();
+  renderHand();
+}
+
+function shuffleLook(){
+  state.seed = Math.floor(Math.random()*1e9);
+  renderHand();
+}
+function surpriseMe(){
+  state.color = COLORS[Math.floor(Math.random()*COLORS.length)].id;
+  state.pattern = PATTERNS[Math.floor(Math.random()*PATTERNS.length)].id;
+  state.finish = FINISHES[Math.floor(Math.random()*FINISHES.length)].id;
+  state.accent = ACCENTS[Math.floor(Math.random()*ACCENTS.length)].id;
+  state.accentColor = COLORS[Math.floor(Math.random()*COLORS.length)].id;
+  state.seed = Math.floor(Math.random()*1e9);
+  refreshAll();
+}
+
+/* ---------------- ORDER SUBMISSION ---------------- */
+async function submitOrder(){
+  const name = document.getElementById('custName').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const note = document.getElementById('custNote').value.trim();
+  const err = document.getElementById('formError');
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!name || !emailOk || phone.length < 7){
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+
+  let designSummary = `${colorName(state.color)} / ${nameOf(PATTERNS,state.pattern)} / ${nameOf(FINISHES,state.finish)} finish`;
+  if(state.accent !== 'none'){
+    designSummary += ` / Ring finger accent: ${nameOf(ACCENTS,state.accent)}`;
+    if(state.accent === 'color') designSummary += ` (${colorName(state.accentColor)})`;
+  }
+
+  const submitBtn = document.querySelector('#orderForm .btn-primary');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  const payload = {
+    "Customer's first name": name,
+    "Parent/guardian email": email,
+    "Parent/guardian phone": phone,
+    "Note": note || '(none)',
+    "Design summary": designSummary,
+    "Base color": colorName(state.color),
+    "Pattern": nameOf(PATTERNS,state.pattern),
+    "Finish": nameOf(FINISHES,state.finish),
+    "Accent style": nameOf(ACCENTS,state.accent),
+    "Accent color (if used)": state.accent === 'color' ? colorName(state.accentColor) : '(n/a)',
+    "_replyto": email,
+    "_subject": `New nail order from ${name}`
+  };
+
+  try{
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){ throw new Error('Formspree responded with ' + res.status); }
+  }catch(e){
+    console.error('Failed to send order', e);
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit my order 💌';
+    alert("Something went wrong sending your order — please check your internet connection and try again.");
+    return;
+  }
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Submit my order 💌';
+  document.getElementById('orderForm').style.display = 'none';
+  document.getElementById('confirmBox').style.display = 'block';
+}
+
+function resetAfterOrder(){
+  document.getElementById('custName').value = '';
+  document.getElementById('custEmail').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('custNote').value = '';
+  document.getElementById('orderForm').style.display = 'block';
+  document.getElementById('confirmBox').style.display = 'none';
+  surpriseMe();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------------- OWNER INFO ---------------- */
+function openOwnerInfo(){
+  document.getElementById('ownerOverlay').classList.add('show');
+}
+function closeOwnerModal(){
+  document.getElementById('ownerOverlay').classList.remove('show');
+}
+
+/* ---------------- INIT ---------------- */
+refreshAll();
+</script>
+</body>
+</html>
