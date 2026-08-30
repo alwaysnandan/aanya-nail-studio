@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -270,10 +271,19 @@
         </div>
       </div>
       <div class="field">
+        <label>How should they get the nails?</label>
+        <div class="accent-row" id="deliveryRow" style="margin-top:2px;"></div>
+      </div>
+      <div class="field" id="addressField" style="display:none;">
+        <label for="custAddress">Home address for drop off</label>
+        <textarea id="custAddress" rows="2" placeholder="Street, city, state, zip"></textarea>
+      </div>
+      <div class="field">
         <label for="custNote">Anything else? (optional)</label>
         <textarea id="custNote" rows="2" placeholder="Nail length, occasion, allergies, etc."></textarea>
       </div>
       <div class="error-text" id="formError">Please fill in your name and a parent's email and phone number.</div>
+      <div class="error-text" id="addressError">Please enter the home address for drop off.</div>
       <button class="btn btn-primary btn-full btn-lg" onclick="submitOrder()">Submit my order 💌</button>
     </div>
 
@@ -351,6 +361,29 @@ let state = {
   accentColor: 'lilac',
   seed: Math.floor(Math.random()*1e9)
 };
+
+let deliveryMethod = 'pickup';
+const DELIVERY_OPTIONS = [
+  {id:'pickup', name:'Pickup'},
+  {id:'dropoff', name:'Drop off'}
+];
+
+function renderDeliveryRow(){
+  const el = document.getElementById('deliveryRow');
+  el.innerHTML = '';
+  DELIVERY_OPTIONS.forEach(d=>{
+    const pill = document.createElement('div');
+    pill.className = 'pill' + (deliveryMethod===d.id?' active':'');
+    pill.textContent = d.name;
+    pill.onclick = ()=>{
+      deliveryMethod = d.id;
+      document.getElementById('addressField').style.display = deliveryMethod==='dropoff' ? 'block' : 'none';
+      document.getElementById('addressError').style.display = 'none';
+      renderDeliveryRow();
+    };
+    el.appendChild(pill);
+  });
+}
 
 /* ---------------- SEEDED RANDOM ---------------- */
 function mulberry32(a){
@@ -625,6 +658,7 @@ function refreshAll(){
   renderPatternGrid();
   renderFinishGrid();
   renderAccentRow();
+  renderDeliveryRow();
   renderHand();
 }
 
@@ -648,7 +682,9 @@ async function submitOrder(){
   const email = document.getElementById('custEmail').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const note = document.getElementById('custNote').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
   const err = document.getElementById('formError');
+  const addrErr = document.getElementById('addressError');
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if(!name || !emailOk || phone.length < 7){
@@ -656,6 +692,12 @@ async function submitOrder(){
     return;
   }
   err.style.display = 'none';
+
+  if(deliveryMethod === 'dropoff' && !address){
+    addrErr.style.display = 'block';
+    return;
+  }
+  addrErr.style.display = 'none';
 
   let designSummary = `${colorName(state.color)} / ${nameOf(PATTERNS,state.pattern)} / ${nameOf(FINISHES,state.finish)} finish`;
   if(state.accent !== 'none'){
@@ -673,6 +715,8 @@ async function submitOrder(){
     "Customer's first name": name,
     "Parent/guardian email": email,
     "Parent/guardian phone": phone,
+    "Delivery method": deliveryMethod === 'dropoff' ? 'Drop off' : 'Pickup',
+    "Drop off address": deliveryMethod === 'dropoff' ? address : '(n/a — pickup)',
     "Note": note || '(none)',
     "Design summary": designSummary,
     "Base color": colorName(state.color),
@@ -711,6 +755,10 @@ function resetAfterOrder(){
   document.getElementById('custEmail').value = '';
   document.getElementById('custPhone').value = '';
   document.getElementById('custNote').value = '';
+  document.getElementById('custAddress').value = '';
+  deliveryMethod = 'pickup';
+  document.getElementById('addressField').style.display = 'none';
+  renderDeliveryRow();
   document.getElementById('orderForm').style.display = 'block';
   document.getElementById('confirmBox').style.display = 'none';
   surpriseMe();
